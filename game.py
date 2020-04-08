@@ -776,7 +776,7 @@ class Game():
         # Restrict Cairo to the exposed area
         alloc = self._canvas.get_allocation()
 
-        cr.rectangle(alloc.x, alloc.y, alloc.width, alloc.height)
+        cr.rectangle(alloc.x , alloc.y - style.GRID_CELL_SIZE, alloc.width, alloc.height)
         cr.clip()
         # Refresh sprite list
         self._sprites.redraw_sprites(cr=cr)

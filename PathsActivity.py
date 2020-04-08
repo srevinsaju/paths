@@ -27,6 +27,7 @@ from sugar3.graphics.toolbarbox import ToolbarButton
 from sugar3.graphics.toolbutton import ToolButton
 from sugar3.graphics.menuitem import MenuItem
 from sugar3.graphics.icon import Icon
+from sugar3.graphics import style
 from sugar3.datastore import datastore
 
 from toolbar_utils import button_factory, image_factory, label_factory, \
@@ -73,20 +74,22 @@ class PathsActivity(activity.Activity):
         else:
             self.colors = ['#A0FFA0', '#FF8080']
 
+        # Create a canvas
+        canvas = Gtk.DrawingArea()
+        canvas.set_size_request(Gdk.Screen.width(), Gdk.Screen.height() - style.GRID_CELL_SIZE)
+        self.set_canvas(canvas)
+        canvas.show()
+
+        self._game = Game(canvas, parent=self, colors=self.colors)
+
         self._setup_toolbars()
         self._setup_dispatch_table()
 
-        # Create a canvas
-        canvas = Gtk.DrawingArea()
-        canvas.set_size_request(Gdk.Screen.width(), Gdk.Screen.height())
-        self.set_canvas(canvas)
-        canvas.show()
-        self.show_all()
 
-        self._game = Game(canvas, parent=self, colors=self.colors)
         self._game.buddies.append(self.nick)
         self._player_colors = [self.colors]
         self._player_pixbuf = [svg_str_to_pixbuf(generate_xo(scale=0.8, colors=self.colors))]
+        self.show_all()
         self.initiating = None # sharing (True) or joining (False)
         self.connect('shared', self._shared_cb)
         self.connect('joined', self._joined_cb)
